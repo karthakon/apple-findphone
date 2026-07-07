@@ -1,0 +1,21 @@
+{
+    "author": "karthakon@gmail.com",
+    "dependencies": {},
+    "keywords": [],
+    "name": "pebble-shortcuts",
+    "pebble": {
+        "displayName": "Pebble Shortcuts",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": []
+        },
+        "sdkVersion": "3",
+        "uuid": "5b9dadcc-3fcc-401e-8507-a3dd092dcc59",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.0.0"
+}
