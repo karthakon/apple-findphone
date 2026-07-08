@@ -2,16 +2,16 @@
 
 static Window *s_window;
 static MenuLayer *s_menu_layer;
-
 static const char *MENU_ITEMS[] = { "Find Phone" };
-static const char *SHORTCUT_NAMES[] = { "FindMe" };
 static const int NUM_ITEMS = 1;
 
-// Send shortcut name to phone via AppMessage
-static void send_shortcut(const char *name) {
+// Tell the phone to fire the ntfy notification.
+static void send_find_phone(void) {
   DictionaryIterator *iter;
-  app_message_outbox_begin(&iter);
-  dict_write_cstring(iter, 0, name);
+  if (app_message_outbox_begin(&iter) != APP_MSG_OK) {
+    return;
+  }
+  dict_write_uint8(iter, MESSAGE_KEY_FIND_PHONE, 1);
   app_message_outbox_send();
 }
 
@@ -29,7 +29,7 @@ static int16_t get_header_height_cb(MenuLayer *layer, uint16_t section, void *co
 }
 
 static void draw_header_cb(GContext *ctx, const Layer *cell_layer, uint16_t section, void *context) {
-  menu_cell_basic_header_draw(ctx, cell_layer, "Shortcuts");
+  menu_cell_basic_header_draw(ctx, cell_layer, "Find Phone");
 }
 
 static void draw_row_cb(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *context) {
@@ -37,13 +37,12 @@ static void draw_row_cb(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_
 }
 
 static void select_cb(MenuLayer *layer, MenuIndex *cell_index, void *context) {
-  send_shortcut(SHORTCUT_NAMES[cell_index->row]);
+  send_find_phone();
 }
 
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
-
   s_menu_layer = menu_layer_create(bounds);
   menu_layer_set_callbacks(s_menu_layer, NULL, (MenuLayerCallbacks){
     .get_num_sections = get_num_sections_cb,
@@ -79,6 +78,7 @@ int main(void) {
     .unload = window_unload,
   });
   window_stack_push(s_window, true);
+
   app_event_loop();
   window_destroy(s_window);
 }
