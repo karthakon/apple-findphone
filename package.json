@@ -10,9 +10,14 @@
         "enableMultiJS": true,
         "messageKeys": [
             "FIND_PHONE",
+            "backend",
             "serverUrl",
             "topic",
-            "priority"
+            "ntfyPriority",
+            "pushoverToken",
+            "pushoverUser",
+            "pushoverSound",
+            "pushoverPriority"
         ],
         "projectType": "native",
         "resources": {
@@ -24,5 +29,5 @@
             "watchface": false
         }
     },
-    "version": "1.1.0"
+    "version": "1.2.0"
 }

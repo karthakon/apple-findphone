@@ -10,55 +10,76 @@ Built for the Pebble Time 2 (obelix/emery) and works on other Pebble models.
 
 1. Menu selection on the watch → `AppMessage` → PebbleKit JS (running inside the
    Pebble app on your iPhone).
-2. PKJS reads your saved server/topic settings and sends an HTTP POST to your
-   [ntfy](https://ntfy.sh) topic.
-3. The ntfy app on your iPhone, subscribed to that topic, raises a notification
-   and plays a tone.
+2. PKJS reads your saved settings and sends an HTTP POST to your chosen backend.
+3. The matching app on your iPhone raises a notification and plays a tone.
+
+## Backends
+
+Pick a backend in the app's settings screen.
+
+- **ntfy** (default) — free, open source, self-hostable. Uses the public
+  `https://ntfy.sh` by default; point it at your own instance in settings.
+- **Pushover** — a paid, hosted service. Its main advantage on iOS is
+  **Critical Alerts**, which bypass the silent switch and Do Not Disturb (see
+  below).
 
 ## Requirements
 
 - A Pebble watch on compatible firmware.
 - The Pebble app on your iPhone.
-- The [ntfy](https://ntfy.sh) iOS app.
+- The app for your chosen backend: [ntfy](https://ntfy.sh) or
+  [Pushover](https://pushover.net).
 
-By default the app uses the public `https://ntfy.sh` server, so no server of
-your own is needed to get started. You can point it at a self-hosted ntfy
-instance in the settings screen if you prefer.
-
-## Setup
+## Setup — ntfy
 
 1. **Pick a topic name.** Choose something unguessable, e.g.
    `findphone-yourname-8x3k`. On the public server, anyone who knows your topic
-   can send you notifications, so make it hard to guess.
+   can send you notifications.
 2. **Install the watchapp.**
-3. **Open the settings screen.** In the Pebble iOS app, open this app's
-   settings. Enter:
-   - **Server URL** — leave as `https://ntfy.sh`, or enter your self-hosted
-     server.
-   - **Topic** — the topic you chose in step 1.
-   - **Priority** — Urgent is recommended (see Custom sounds below).
-   Tap **Save Settings**.
-4. **Subscribe in the ntfy iOS app.** Open ntfy → **+** → enter the same topic
-   (and server URL, if self-hosted) → Subscribe.
-5. **Test.** Open the watchapp, select **Find Phone**. Your phone should notify.
+3. **Settings screen** (in the Pebble iOS app): set **Backend** to `ntfy`,
+   **Server URL** (default `https://ntfy.sh`), **Topic**, **Priority**. Save.
+4. **Subscribe in the ntfy iOS app** to the same topic (and server, if
+   self-hosted).
+5. **Test:** open the watchapp → **Find Phone**.
 
-## Custom notification sounds
+## Setup — Pushover
 
-iOS ntfy does **not** honor a `Sound` HTTP header — it is ignored. Your options:
+1. **Create a Pushover account** and an Application to get an **API Token**.
+   Your **User Key** is on your dashboard.
+2. **Install the Pushover iOS app** and log in.
+3. **Settings screen** (in the Pebble iOS app): set **Backend** to `pushover`,
+   then enter **API Token**, **User Key**, a **Sound**, and **Priority**. Save.
+4. **Test:** open the watchapp → **Find Phone**.
 
-- **Priority-based sounds (built-in).** ntfy maps notification priority to
-  different iOS sounds; `urgent`/`max` is the most attention-grabbing. This app
-  exposes Priority in settings. No extra setup, works on the public server.
-- **Custom sounds via self-hosted ntfy.** A self-hosted ntfy server can be
-  configured with custom notification sounds that the iOS app will play. Point
-  the app's Server URL setting at your instance.
-- **ntfy Pro.** The hosted paid tier also supports custom sounds without
-  self-hosting.
+## The iOS silent switch
+
+By default, none of these notifications play a sound when the hardware ring/silent
+switch is set to silent — that's an iOS limitation, not an app bug. Bypassing it
+requires **Critical Alerts**, an app-level Apple entitlement.
+
+- **ntfy:** does not currently trigger Critical Alerts on iOS. Priority does not
+  bypass the silent switch. (The entitlement is granted but not yet wired up
+  upstream, so this may change.)
+- **Pushover:** supports Critical Alerts. Enable **Critical Alerts for
+  high-priority** in the Pushover iOS app settings (approve the iOS dialog),
+  then use **High** or **Emergency** priority here. These bypass the silent
+  switch and Do Not Disturb.
+
+Emergency priority (Pushover) also requires acknowledgement and repeats; this app
+sends `retry=30` and `expire=300` automatically for that level.
+
+## Notification sounds
+
+- **ntfy:** priority maps to different built-in iOS sounds. Custom sounds require
+  a self-hosted ntfy server (configured server-side) or ntfy Pro.
+- **Pushover:** choose from its built-in sounds via the **Sound** setting
+  (e.g. `pushover`, `siren`, `spacealarm`, `none`).
 
 ## Building
 
-Written in C with a PebbleKit JS component and a [Clay](https://github.com/pebble/clay)
-settings screen. Build with the Pebble SDK or CloudPebble.
+Written in C with a PebbleKit JS component and a
+[Clay](https://github.com/pebble/clay) settings screen (via `@rebble/clay` for
+gabbro support). Build with the Pebble SDK or CloudPebble.
 
 ## License
 

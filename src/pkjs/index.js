@@ -4,33 +4,64 @@ var clay = new Clay(clayConfig);
 
 function getSettings() {
   var raw = localStorage.getItem('clay-settings');
-  var settings = raw ? JSON.parse(raw) : {};
+  var s = raw ? JSON.parse(raw) : {};
   return {
-    serverUrl: (settings.serverUrl || 'https://ntfy.sh').replace(/\/+$/, ''),
-    topic: settings.topic || '',
-    priority: settings.priority || 'urgent'
+    backend: s.backend || 'ntfy',
+    serverUrl: (s.serverUrl || 'https://ntfy.sh').replace(/\/+$/, ''),
+    topic: s.topic || '',
+    ntfyPriority: s.ntfyPriority || 'urgent',
+    pushoverToken: s.pushoverToken || '',
+    pushoverUser: s.pushoverUser || '',
+    pushoverSound: s.pushoverSound || 'pushover',
+    pushoverPriority: s.pushoverPriority || '1'
   };
 }
 
-function findPhone() {
-  var s = getSettings();
+function sendNtfy(s) {
   if (!s.topic) {
     console.log('No ntfy topic configured. Open app settings.');
     return;
   }
-  var url = s.serverUrl + '/' + s.topic;
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', url);
+  xhr.open('POST', s.serverUrl + '/' + s.topic);
   xhr.setRequestHeader('Title', 'Find Phone');
-  xhr.setRequestHeader('Priority', s.priority);
+  xhr.setRequestHeader('Priority', s.ntfyPriority);
   xhr.setRequestHeader('Tags', 'phone');
-  xhr.onload = function() {
-    console.log('ntfy POST status: ' + xhr.status);
-  };
-  xhr.onerror = function() {
-    console.log('ntfy POST failed');
-  };
+  xhr.onload = function() { console.log('ntfy POST status: ' + xhr.status); };
+  xhr.onerror = function() { console.log('ntfy POST failed'); };
   xhr.send('Find my phone!');
+}
+
+function sendPushover(s) {
+  if (!s.pushoverToken || !s.pushoverUser) {
+    console.log('Pushover token/user not configured. Open app settings.');
+    return;
+  }
+  var params =
+    'token=' + encodeURIComponent(s.pushoverToken) +
+    '&user=' + encodeURIComponent(s.pushoverUser) +
+    '&title=' + encodeURIComponent('Find Phone') +
+    '&message=' + encodeURIComponent('Find my phone!') +
+    '&sound=' + encodeURIComponent(s.pushoverSound) +
+    '&priority=' + encodeURIComponent(s.pushoverPriority);
+  if (s.pushoverPriority === '2') {
+    params += '&retry=30&expire=300';
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://api.pushover.net/1/messages.json');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function() { console.log('Pushover POST status: ' + xhr.status + ' ' + xhr.responseText); };
+  xhr.onerror = function() { console.log('Pushover POST failed'); };
+  xhr.send(params);
+}
+
+function findPhone() {
+  var s = getSettings();
+  if (s.backend === 'pushover') {
+    sendPushover(s);
+  } else {
+    sendNtfy(s);
+  }
 }
 
 Pebble.addEventListener('ready', function() {
