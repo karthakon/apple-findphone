@@ -62,4 +62,4 @@ settings screen. Build with the Pebble SDK or CloudPebble.
 
 ## License
 
-TODO: choose a license.
+Apache License 2.0. See [LICENSE](LICENSE).
