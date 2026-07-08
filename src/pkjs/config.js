@@ -47,18 +47,6 @@ module.exports = [
         "attributes": {
           "placeholder": "findphone-yourname"
         }
-      },
-      {
-        "type": "select",
-        "messageKey": "ntfyPriority",
-        "label": "Priority",
-        "defaultValue": "urgent",
-        "options": [
-          { "label": "Max", "value": "max" },
-          { "label": "Urgent", "value": "urgent" },
-          { "label": "High", "value": "high" },
-          { "label": "Default", "value": "default" }
-        ]
       }
     ]
   },
@@ -71,7 +59,7 @@ module.exports = [
       },
       {
         "type": "text",
-        "defaultValue": "For silent-switch bypass, enable Critical Alerts in the Pushover iOS app settings and use High or Emergency priority."
+        "defaultValue": "For silent-switch bypass, enable Critical Alerts in the Pushover iOS app settings and use High priority. The alert sound is chosen in the Pushover app."
       },
       {
         "type": "input",
@@ -89,15 +77,6 @@ module.exports = [
         "defaultValue": "",
         "attributes": {
           "placeholder": "user key"
-        }
-      },
-      {
-        "type": "input",
-        "messageKey": "pushoverSound",
-        "label": "Sound",
-        "defaultValue": "pushover",
-        "attributes": {
-          "placeholder": "pushover"
         }
       },
       {

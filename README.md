@@ -37,7 +37,7 @@ Pick a backend in the app's settings screen.
    can send you notifications.
 2. **Install the watchapp.**
 3. **Settings screen** (in the Pebble iOS app): set **Backend** to `ntfy`,
-   **Server URL** (default `https://ntfy.sh`), **Topic**, **Priority**. Save.
+   **Server URL** (default `https://ntfy.sh`), **Topic**. Save.
 4. **Subscribe in the ntfy iOS app** to the same topic (and server, if
    self-hosted).
 5. **Test:** open the watchapp → **Find Phone**.
@@ -48,7 +48,8 @@ Pick a backend in the app's settings screen.
    Your **User Key** is on your dashboard.
 2. **Install the Pushover iOS app** and log in.
 3. **Settings screen** (in the Pebble iOS app): set **Backend** to `pushover`,
-   then enter **API Token**, **User Key**, a **Sound**, and **Priority**. Save.
+   then enter **API Token**, **User Key**, and **Priority**. Save. The alert
+   sound is chosen in the Pushover iOS app, not here.
 4. **Test:** open the watchapp → **Find Phone**.
 
 ## The iOS silent switch
@@ -62,18 +63,21 @@ requires **Critical Alerts**, an app-level Apple entitlement.
   upstream, so this may change.)
 - **Pushover:** supports Critical Alerts. Enable **Critical Alerts for
   high-priority** in the Pushover iOS app settings (approve the iOS dialog),
-  then use **High** or **Emergency** priority here. These bypass the silent
-  switch and Do Not Disturb.
+  then use **High** priority here. This bypasses the silent switch and Do Not
+  Disturb and fires once.
 
-Emergency priority (Pushover) also requires acknowledgement and repeats; this app
-sends `retry=30` and `expire=300` automatically for that level.
+Emergency priority (Pushover) also bypasses the silent switch, but Pushover's
+servers repeat it until you acknowledge it in the app, so it is not recommended
+for find-my-phone. This app sends `retry=30` and `expire=300` automatically for
+that level.
 
 ## Notification sounds
 
-- **ntfy:** priority maps to different built-in iOS sounds. Custom sounds require
-  a self-hosted ntfy server (configured server-side) or ntfy Pro.
-- **Pushover:** choose from its built-in sounds via the **Sound** setting
-  (e.g. `pushover`, `siren`, `spacealarm`, `none`).
+- **ntfy:** the iOS app plays its default notification sound. Custom sounds
+  require a self-hosted ntfy server (configured server-side) or ntfy Pro. (ntfy
+  priority currently has no effect on iOS, so this app does not send it.)
+- **Pushover:** the alert sound is chosen in the Pushover iOS app settings, not
+  by this app. With Critical Alerts enabled, the critical-alert sound is used.
 
 ## Building
 

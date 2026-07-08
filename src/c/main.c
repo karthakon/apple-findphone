@@ -5,7 +5,7 @@ static MenuLayer *s_menu_layer;
 static const char *MENU_ITEMS[] = { "Find Phone" };
 static const int NUM_ITEMS = 1;
 
-// Tell the phone to fire the ntfy notification.
+// Tell the phone to fire the notification.
 static void send_find_phone(void) {
   DictionaryIterator *iter;
   if (app_message_outbox_begin(&iter) != APP_MSG_OK) {
@@ -24,14 +24,6 @@ static uint16_t get_num_rows_cb(MenuLayer *layer, uint16_t section, void *contex
   return NUM_ITEMS;
 }
 
-static int16_t get_header_height_cb(MenuLayer *layer, uint16_t section, void *context) {
-  return MENU_CELL_BASIC_HEADER_HEIGHT;
-}
-
-static void draw_header_cb(GContext *ctx, const Layer *cell_layer, uint16_t section, void *context) {
-  menu_cell_basic_header_draw(ctx, cell_layer, "Find Phone");
-}
-
 static void draw_row_cb(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *context) {
   menu_cell_basic_draw(ctx, cell_layer, MENU_ITEMS[cell_index->row], NULL, NULL);
 }
@@ -47,8 +39,6 @@ static void window_load(Window *window) {
   menu_layer_set_callbacks(s_menu_layer, NULL, (MenuLayerCallbacks){
     .get_num_sections = get_num_sections_cb,
     .get_num_rows = get_num_rows_cb,
-    .get_header_height = get_header_height_cb,
-    .draw_header = draw_header_cb,
     .draw_row = draw_row_cb,
     .select_click = select_cb,
   });

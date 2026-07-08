@@ -9,10 +9,8 @@ function getSettings() {
     backend: s.backend || 'ntfy',
     serverUrl: (s.serverUrl || 'https://ntfy.sh').replace(/\/+$/, ''),
     topic: s.topic || '',
-    ntfyPriority: s.ntfyPriority || 'urgent',
     pushoverToken: s.pushoverToken || '',
     pushoverUser: s.pushoverUser || '',
-    pushoverSound: s.pushoverSound || 'pushover',
     pushoverPriority: s.pushoverPriority || '1'
   };
 }
@@ -25,7 +23,6 @@ function sendNtfy(s) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', s.serverUrl + '/' + s.topic);
   xhr.setRequestHeader('Title', 'Find Phone');
-  xhr.setRequestHeader('Priority', s.ntfyPriority);
   xhr.setRequestHeader('Tags', 'phone');
   xhr.onload = function() { console.log('ntfy POST status: ' + xhr.status); };
   xhr.onerror = function() { console.log('ntfy POST failed'); };
@@ -42,7 +39,6 @@ function sendPushover(s) {
     '&user=' + encodeURIComponent(s.pushoverUser) +
     '&title=' + encodeURIComponent('Find Phone') +
     '&message=' + encodeURIComponent('Find my phone!') +
-    '&sound=' + encodeURIComponent(s.pushoverSound) +
     '&priority=' + encodeURIComponent(s.pushoverPriority);
   if (s.pushoverPriority === '2') {
     params += '&retry=30&expire=300';
